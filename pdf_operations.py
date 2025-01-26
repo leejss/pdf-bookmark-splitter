@@ -1,6 +1,7 @@
+import os
 from typing import List, Tuple
 from pypdf import PdfReader, PdfWriter
-import os
+
 
 class PdfSplitter:
     def __init__(self, file_path: str, prefix: str):
@@ -9,7 +10,7 @@ class PdfSplitter:
 
         self.reader = PdfReader(file_path)
 
-    def get_chapter_info(self ) -> List[Tuple[str, int]]:
+    def get_chapter_info(self) -> List[Tuple[str, int]]:
         """
         Extracts chapter information from the PDF document's outline.
 
@@ -38,7 +39,7 @@ class PdfSplitter:
             if isinstance(item, list):
                 continue
 
-            title = item.get('/Title', 'No Title')
+            title = item.get("/Title", "No Title")
             page_number = self.reader.get_destination_page_number(item)
 
             if title.startswith(self.prefix):
@@ -66,23 +67,21 @@ class PdfSplitter:
             # Creates PDFs like: output/chapters/Chapter1.pdf, output/chapters/Chapter2.pdf, etc.
         """
         os.makedirs(output_dir, exist_ok=True)
-        
         chapters = self.get_chapter_info()
+
         if not chapters:
             print("No chapters found")
             return
-        
+
         total_pages = len(self.reader.pages)
-        
+
         for i, (current_chapter, current_page) in enumerate(chapters):
             end_page = chapters[i + 1][1] if i < len(chapters) - 1 else total_pages
-            
             writer = PdfWriter()
+
             for page_num in range(current_page, end_page):
                 writer.add_page(self.reader.pages[page_num])
-            
+
             output_file = os.path.join(output_dir, f"{current_chapter}.pdf")
             with open(output_file, "wb") as output:
                 writer.write(output)
-
-            
