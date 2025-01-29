@@ -1,5 +1,5 @@
-from cli import parse_args
-from pdf_operations import PdfSplitter
+from .cli import parse_args
+from .pdf_operations import PdfSplitter
 
 def main():
     args = parse_args()

@@ -12,30 +12,44 @@ A Python utility that splits a PDF file into multiple files based on its bookmar
 ## Requirements
 
 - Python 3.6+
+- PyPDF (automatically installed with package)
 
 ## Installation
 
-1. Clone the repository
-2. Install dependencies:
+You can install the package directly from the repository:
 
 ```bash
-pip install -r requirements.txt
+pip install git+https://github.com/leejss/pdf-bookmark-splitter.git
 ```
 
-## Examples
+Or install in development mode:
 
-If you have a PDF file 'document.pdf' with bookmarks like:
+```bash
+git clone https://github.com/leejss/pdf-bookmark-splitter.git
+cd pdf-bookmark-splitter
+pip install -e .
+```
 
-- Chapter 1
-- Chapter 2
-- Chapter 3
+## Usage
 
-Running the splitter will create:
+After installation, you can use the command-line tool:
 
-- Chapter_1.pdf
-- Chapter_2.pdf
-- Chapter_3.pdf
+```bash
+pdf-split input.pdf
+```
+
+This will create separate PDF files in the current directory, named according to the bookmarks in the input PDF.
+
+## Development
+
+To contribute to the project:
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## License
 
-MIT License
+This project is licensed under the MIT License - see the LICENSE file for details.
