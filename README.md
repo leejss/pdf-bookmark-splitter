@@ -11,31 +11,63 @@ A Python utility that splits a PDF file into multiple files based on its bookmar
 
 ## Requirements
 
-- Python 3.6+
+- Python 3.11+
+- [uv](https://docs.astral.sh/uv/) - Fast Python package manager
 - PyPDF (automatically installed with package)
 
 ## Installation
 
-You can install the package directly from the repository:
+### Using uv (Recommended)
+
+This project uses `uv` for dependency management. First, install uv:
+
+```bash
+# macOS/Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+Then clone and set up the project:
+
+```bash
+git clone https://github.com/leejss/pdf-bookmark-splitter.git
+cd pdf-bookmark-splitter
+uv sync
+```
+
+### Using pip (Alternative)
+
+You can also install with pip:
 
 ```bash
 pip install git+https://github.com/leejss/pdf-bookmark-splitter.git
 ```
 
-Or install in development mode:
-
-```bash
-git clone https://github.com/leejss/pdf-bookmark-splitter.git
-cd pdf-bookmark-splitter
-pip install -e .
-```
-
 ## Usage
 
-After installation, you can use the command-line tool:
+### With uv
 
 ```bash
-pdf-split input.pdf
+uv run pdf-split input.pdf --output-dir chapters
 ```
 
-This will create separate PDF files in the current directory, named according to the bookmarks in the input PDF.
+### With pip installation
+
+```bash
+pdf-split input.pdf --output-dir chapters
+```
+
+### Options
+
+- `--output-dir`: Directory to save split PDF files (default: `chapters`)
+
+### Example
+
+```bash
+# Split PDF and save to 'output' directory
+uv run pdf-split book.pdf --output-dir output
+```
+
+This will create separate PDF files in the specified directory, named according to the top-level bookmarks in the input PDF.

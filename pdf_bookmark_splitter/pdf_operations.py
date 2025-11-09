@@ -4,46 +4,60 @@ from pypdf import PdfReader, PdfWriter
 
 
 class PdfSplitter:
-    def __init__(self, file_path: str, prefix: str):
+    def __init__(self, file_path: str ):
         self.file_path = file_path
-        self.prefix = prefix
-
         self.reader = PdfReader(file_path)
+
+    def _extract_outline_recursive(self, outline_items: list, titles: List[Tuple[str, int]]) -> None:
+        """
+        Recursively extracts all bookmark entries from nested outline structure.
+        
+        Args:
+            outline_items: List of outline items (can contain nested lists)
+            titles: Accumulator list to store extracted (title, page_number) tuples
+        """
+        for item in outline_items:
+            if isinstance(item, list):
+                # Recursively process nested outline
+                self._extract_outline_recursive(item, titles)
+            else:
+                # Extract title and page number from bookmark
+                title = item.get("/Title", "No Title")
+                page_number = self.reader.get_destination_page_number(item)
+                titles.append((title, page_number))
 
     def get_chapter_info(self) -> List[Tuple[str, int]]:
         """
         Extracts chapter information from the PDF document's outline.
 
         This method processes the PDF outline/bookmarks to find chapters and their corresponding page numbers.
-        Only processes entries that start with "Chapter".
+        Processes ALL outline entries including nested sub-outlines recursively.
 
         Returns:
             List[Tuple[str, int]]: A list of tuples containing:
                 - str: Chapter title
                 - int: Corresponding page number in the PDF
+            
+            The list is sorted by page number in ascending order.
 
         Returns empty list if outline is empty or invalid.
 
         Example:
             >>> pdf.get_chapter_info()
-            [('Chapter 1', 1), ('Chapter 2', 15), ('Chapter 3', 30)]
+            [('Chapter 1', 1), ('Chapter 1.1', 3), ('Chapter 2', 15), ('Chapter 2.1', 17)]
         """
         outline = self.reader.outline
         titles: List[Tuple[str, int]] = []
 
         if not outline or not isinstance(outline, list):
-            # ? Throw an exception here ?
+            # fail to get outline. return empty list
             return titles
 
-        for item in outline:
-            if isinstance(item, list):
-                continue
-
-            title = item.get("/Title", "No Title")
-            page_number = self.reader.get_destination_page_number(item)
-
-            if title.startswith(self.prefix):
-                titles.append((title, page_number))
+        # Recursively extract all bookmarks
+        self._extract_outline_recursive(outline, titles)
+        
+        # Sort by page number to ensure correct splitting order
+        titles.sort(key=lambda x: x[1])
 
         return titles
 
