@@ -47,13 +47,15 @@ pip install git+https://github.com/leejss/pdf-bookmark-splitter.git
 
 ## Usage
 
-### With uv
+### Basic Usage
+
+#### With uv
 
 ```bash
 uv run pdf-split input.pdf --output-dir chapters
 ```
 
-### With pip installation
+#### With pip installation
 
 ```bash
 pdf-split input.pdf --output-dir chapters
@@ -61,13 +63,46 @@ pdf-split input.pdf --output-dir chapters
 
 ### Options
 
-- `--output-dir`: Directory to save split PDF files (default: `chapters`)
+- `--output-dir DIR`: Directory to save split PDF files (default: `chapters`)
+- `--verbose, -v`: Enable verbose output (shows detailed progress)
+- `--quiet, -q`: Suppress all output except errors
+- `--dry-run`: Show what would be done without actually creating files
+- `--list-bookmarks`: List all bookmarks in the PDF and exit
+- `--version`: Show program version and exit
+- `--help, -h`: Show help message and exit
 
-### Example
+### Examples
+
+#### Basic splitting
 
 ```bash
+# Split PDF and save to 'chapters' directory (default)
+uv run pdf-split book.pdf
+
 # Split PDF and save to 'output' directory
 uv run pdf-split book.pdf --output-dir output
 ```
 
-This will create separate PDF files in the specified directory, named according to the top-level bookmarks in the input PDF.
+#### Preview before splitting
+
+```bash
+# List all bookmarks without creating files
+uv run pdf-split book.pdf --list-bookmarks
+
+# Dry run - see what would be created
+uv run pdf-split book.pdf --dry-run
+```
+
+#### Verbose and quiet modes
+
+```bash
+# Verbose mode - see detailed progress
+uv run pdf-split book.pdf --verbose
+
+# Quiet mode - only show errors
+uv run pdf-split book.pdf --quiet
+```
+
+### Output
+
+The tool will create separate PDF files in the specified directory, named according to the bookmarks in the input PDF. Special characters in bookmark names are automatically sanitized to create valid filenames.
